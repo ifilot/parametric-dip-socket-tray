@@ -54,6 +54,12 @@ and keep the sockets arranged in neat rows.
 | --- |
 | ![Wide DIP-40 tray](assets/dip40-tray.png) |
 
+Socket geometry shown in the previews is derived from the
+[KiCad 3D Models library](https://gitlab.com/kicad/libraries/kicad-packages3D),
+licensed under [CC BY-SA 4.0 with the KiCad Libraries Exception](https://www.kicad.org/libraries/license/).
+The sockets are shown for illustration only and are not included in the
+downloadable tray models.
+
 ## Supported trays
 
 | Socket | Profile | Rows | Per row | Capacity |
