@@ -1,5 +1,8 @@
 # Parametric DIP socket trays
 
+[![Build trays](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml/badge.svg)](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml)
+[![License: CERN-OHL-S-2.0](https://img.shields.io/badge/License-CERN--OHL--S--2.0-blue.svg)](LICENSE)
+
 Stackable 160 × 160 mm storage trays for standard spring-contact DIP sockets.
 Each tray holds one socket size in continuous channels that protect the pins
 and keep the sockets arranged in neat rows.
