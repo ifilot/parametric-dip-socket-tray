@@ -20,6 +20,22 @@ and keep the sockets arranged in neat rows.
 - Ready-to-print STLs and small fit-test coupons
 - Fully parametric OpenSCAD source
 
+## Downloads
+
+**[Download the parametric OpenSCAD source](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/dip_socket_tray.scad)** ·
+**[Download the complete project](https://github.com/ifilot/parametric-dip-socket-tray/archive/refs/heads/master.zip)** ·
+**[View automated builds](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml)**
+
+| Socket | Tray | Two-colour label | Fit test |
+| --- | --- | --- | --- |
+| DIP-14 | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip14-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip14-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip14-fit-test.stl) |
+| DIP-16 | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip16-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip16-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip16-fit-test.stl) |
+| DIP-18 | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip18-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip18-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip18-fit-test.stl) |
+| DIP-20 | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip20-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip20-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip20-fit-test.stl) |
+| DIP-28 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-fit-test.stl) |
+| DIP-32 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-fit-test.stl) |
+| DIP-40 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-fit-test.stl) |
+
 ## Tray previews
 
 | DIP-14 — 104 sockets | DIP-16 — 91 sockets |
