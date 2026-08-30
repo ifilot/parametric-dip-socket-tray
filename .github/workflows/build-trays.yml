@@ -1,0 +1,42 @@
+name: Build trays
+
+on:
+  push:
+    paths:
+      - "dip_socket_tray.scad"
+      - "scripts/build_all.sh"
+      - ".github/workflows/build-trays.yml"
+  pull_request:
+    paths:
+      - "dip_socket_tray.scad"
+      - "scripts/build_all.sh"
+      - ".github/workflows/build-trays.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes openscad
+
+      - name: Build all STL files
+        run: bash scripts/build_all.sh dist
+
+      - name: Upload STL bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: dip-socket-trays
+          path: dist/*.stl
+          if-no-files-found: error
+          retention-days: 30

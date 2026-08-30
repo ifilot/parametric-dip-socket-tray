@@ -1,0 +1,23 @@
+# Local build output (release exports in exports/ remain versioned)
+/build/
+/dist/
+
+# Slicer and printer output
+*.3mf
+*.gcode
+*.bgcode
+
+# OpenSCAD, Blender, and Python temporary files
+*.scad~
+*.blend1
+__pycache__/
+*.py[cod]
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
