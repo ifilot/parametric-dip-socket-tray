@@ -182,7 +182,7 @@ socket_model_names = {
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
-tray_mat = material("Matte sepia PLA", (0.58, 0.32, 0.16), roughness=0.86)
+tray_mat = material("Matte light sepia PLA", (0.70, 0.47, 0.29), roughness=0.86)
 label_mat = material("Black label", (0.008, 0.008, 0.008), roughness=0.90)
 socket_mat = material("Black socket body", (0.012, 0.014, 0.016), roughness=0.76)
 contact_mat = material("Socket contacts", (0.30, 0.32, 0.34),
@@ -201,7 +201,7 @@ if len(args) > 1:
 bpy.ops.object.camera_add(location=(215, -230, 405))
 camera = bpy.context.object
 camera.data.type = "ORTHO"
-camera.data.ortho_scale = 218
+camera.data.ortho_scale = 232
 camera.data.lens = 55
 point_at(camera, (80, 80, 3.0))
 bpy.context.scene.camera = camera
