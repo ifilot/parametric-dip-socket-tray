@@ -47,9 +47,8 @@ stack_inset = 1.00;
 
 /* [Label] */
 label_depth = 0.60;
-label_height = 4.5;
+label_height = 6.0;
 label_font = "Liberation Sans:style=Bold";
-label_z = 7.0;
 
 /* [Quality] */
 $fn = $preview ? 40 : 80;
@@ -66,6 +65,7 @@ support_ridge_width = is_wide_socket
 socket_length = pins / 2 * pin_pitch;
 support_z = base_thickness + pin_drop + pin_clearance;
 stack_plane_z = support_z + socket_height + vertical_clearance;
+label_z = stack_plane_z / 2;
 channel_width = socket_width + 2 * side_clearance;
 row_pitch = channel_width + guide_width;
 inner_size = [tray_size[0] - 2 * outer_wall,
@@ -144,7 +144,8 @@ module stack_groove_cut() {
 module storage_rails() {
     // Each socket bridges two uninterrupted pin trenches and rests only on
     // the central dike. Guides on both sides of every channel keep the bodies
-    // upright, including in the two channels next to the perimeter wall.
+    // upright. The outer guides extend to the perimeter, leaving no debris-
+    // collecting gap while retaining the same channel-facing clearance.
     for (row = [0 : row_count - 1]) {
         cx = rows_x0 + channel_width / 2 + row * row_pitch;
 
@@ -154,13 +155,19 @@ module storage_rails() {
                   support_z - base_thickness + eps]);
     }
 
-    for (divider = [0 : row_count]) {
+    for (divider = [1 : row_count - 1]) {
         x = rows_x0 + divider * channel_width
           + (divider - 1) * guide_width;
         translate([x, outer_wall, base_thickness - eps])
             cube([guide_width, inner_size[1],
                   support_z + guide_height - base_thickness + eps]);
     }
+
+    edge_guide_width = rows_x0 - outer_wall;
+    for (x = [outer_wall, rows_x0 + used_rows_width])
+        translate([x, outer_wall, base_thickness - eps])
+            cube([edge_guide_width, inner_size[1],
+                  support_z + guide_height - base_thickness + eps]);
 }
 
 module front_label(depth = label_depth + 2 * eps) {
