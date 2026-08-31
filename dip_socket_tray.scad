@@ -143,7 +143,8 @@ module stack_groove_cut() {
 
 module storage_rails() {
     // Each socket bridges two uninterrupted pin trenches and rests only on
-    // the central dike. The low separators keep bodies in their own channel.
+    // the central dike. Guides on both sides of every channel keep the bodies
+    // upright, including in the two channels next to the perimeter wall.
     for (row = [0 : row_count - 1]) {
         cx = rows_x0 + channel_width / 2 + row * row_pitch;
 
@@ -153,7 +154,7 @@ module storage_rails() {
                   support_z - base_thickness + eps]);
     }
 
-    for (divider = [1 : row_count - 1]) {
+    for (divider = [0 : row_count]) {
         x = rows_x0 + divider * channel_width
           + (divider - 1) * guide_width;
         translate([x, outer_wall, base_thickness - eps])

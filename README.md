@@ -24,6 +24,7 @@ and keep the sockets arranged in neat rows.
 
 **[Download the parametric OpenSCAD source](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/dip_socket_tray.scad)** ·
 **[Download the complete project](https://github.com/ifilot/parametric-dip-socket-tray/archive/refs/heads/master.zip)** ·
+**[Download versioned releases](https://github.com/ifilot/parametric-dip-socket-tray/releases)** ·
 **[View automated builds](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml)**
 
 | Socket | Tray | Two-colour label | Fit test |
@@ -144,6 +145,12 @@ Output is written to `build/` by default. Pass a directory as the first
 argument to use a different destination. GitHub Actions runs the same script
 for pushes and pull requests that affect the model or build procedure, then
 publishes the complete STL set as a downloadable workflow artifact.
+
+## Versioning and releases
+
+This project follows [Semantic Versioning](https://semver.org/). The current
+version is recorded in [`VERSION`](VERSION), and release notes are maintained
+in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Stacking interface
 

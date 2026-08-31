@@ -3,11 +3,13 @@ name: Build trays
 on:
   push:
     paths:
+      - "VERSION"
       - "dip_socket_tray.scad"
       - "scripts/build_all.sh"
       - ".github/workflows/build-trays.yml"
   pull_request:
     paths:
+      - "VERSION"
       - "dip_socket_tray.scad"
       - "scripts/build_all.sh"
       - ".github/workflows/build-trays.yml"
@@ -25,6 +27,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
+      - name: Read project version
+        id: version
+        shell: bash
+        run: echo "version=$(tr -d '[:space:]' < VERSION)" >> "${GITHUB_OUTPUT}"
+
       - name: Install OpenSCAD
         run: |
           sudo apt-get update
@@ -36,7 +43,7 @@ jobs:
       - name: Upload STL bundle
         uses: actions/upload-artifact@v7
         with:
-          name: dip-socket-trays
+          name: dip-socket-trays-v${{ steps.version.outputs.version }}
           path: dist/*.stl
           if-no-files-found: error
           retention-days: 30
