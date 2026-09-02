@@ -6,13 +6,14 @@
  *
  * Export examples:
  *   openscad -o dip14-tray.stl -D 'pins=14' -D 'part="tray"' dip_socket_tray.scad
+ *   openscad -o lid.stl        -D 'part="lid"' dip_socket_tray.scad
  *   openscad -o dip14-label.stl -D 'pins=14' -D 'part="label"' dip_socket_tray.scad
  *   openscad -o fit-test.stl   -D 'part="fit_test"' dip_socket_tray.scad
  */
 
 /* [Main] */
 pins = 14;                    // [14,16,18,20,28,32,40]
-part = "assembly";            // [assembly,tray,label,fit_test]
+part = "assembly";            // [assembly,tray,lid,label,fit_test]
 show_sockets = true;          // Preview-only reference sockets
 
 /* [Socket] */
@@ -44,6 +45,9 @@ stack_lip_height = 1.20;
 stack_fit = 0.30;             // Horizontal clearance on each side
 stack_groove_depth = 1.40;
 stack_inset = 1.00;
+
+/* [Lid] */
+lid_thickness = 2.40;
 
 /* [Label] */
 label_depth = 0.60;
@@ -83,16 +87,24 @@ label_text = str("DIP-", pins);
 assert(valid_pins, "pins must be 14, 16, 18, 20, 28, 32, or 40");
 assert(base_thickness > stack_groove_depth,
        "The stacking groove must leave some base thickness");
+assert(lid_thickness > stack_groove_depth,
+       "The stacking groove must leave some lid thickness");
 assert(support_ridge_width < pin_row_spacing - 1.0,
        "Support ridge is too wide and may contact inward-bent pins");
 assert(row_count > 0 && socket_count_per_row > 0,
        "Socket dimensions leave no usable storage positions");
 
-echo(str("DIP-", pins, ": ", row_count, " rows x ",
-         socket_count_per_row, " sockets = ",
-         row_count * socket_count_per_row, " sockets"));
-echo(str("Stacking pitch: ", stack_plane_z, " mm; overall printed height: ",
-         stack_plane_z + stack_lip_height, " mm"));
+if (part == "lid") {
+    echo(str("Universal lid: ", tray_size[0], " x ", tray_size[1],
+             " x ", lid_thickness + stack_lip_height, " mm"));
+} else {
+    echo(str("DIP-", pins, ": ", row_count, " rows x ",
+             socket_count_per_row, " sockets = ",
+             row_count * socket_count_per_row, " sockets"));
+    echo(str("Stacking pitch: ", stack_plane_z,
+             " mm; overall printed height: ",
+             stack_plane_z + stack_lip_height, " mm"));
+}
 
 module rounded_rect_2d(size, radius) {
     offset(r = radius)
@@ -108,9 +120,9 @@ module rounded_ring_2d(outer_size, width, radius) {
     }
 }
 
-module tray_base() {
+module tray_base(thickness = base_thickness) {
     translate([tray_size[0] / 2, tray_size[1] / 2, 0])
-        linear_extrude(base_thickness)
+        linear_extrude(thickness)
             rounded_rect_2d(tray_size, corner_radius);
 }
 
@@ -121,11 +133,11 @@ module perimeter_wall() {
             rounded_ring_2d(tray_size, outer_wall, corner_radius);
 }
 
-module stack_lip() {
+module stack_lip(z = stack_plane_z) {
     lip_outer = [tray_size[0] - 2 * stack_inset,
                  tray_size[1] - 2 * stack_inset];
     translate([tray_size[0] / 2, tray_size[1] / 2,
-               stack_plane_z - eps])
+               z - eps])
         linear_extrude(stack_lip_height + eps)
             rounded_ring_2d(lip_outer, stack_lip_width,
                             corner_radius - stack_inset);
@@ -193,6 +205,19 @@ module tray() {
     }
 }
 
+module lid() {
+    // The underside groove fits every tray's top lip. Repeating the lip on
+    // top keeps the complete system stackable even when the lid is inserted
+    // between trays.
+    difference() {
+        union() {
+            tray_base(lid_thickness);
+            stack_lip(lid_thickness);
+        }
+        stack_groove_cut();
+    }
+}
+
 module label_inlay() {
     // Export as a second STL and load it as another part of the same object
     // in PrusaSlicer. It occupies exactly the volume removed from the tray.
@@ -246,6 +271,8 @@ module fit_test() {
 
 if (part == "tray") {
     tray();
+} else if (part == "lid") {
+    lid();
 } else if (part == "label") {
     label_inlay();
 } else if (part == "fit_test") {

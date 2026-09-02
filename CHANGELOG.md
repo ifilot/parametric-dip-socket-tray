@@ -3,6 +3,14 @@
 All notable changes to this project are documented here. Releases follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-09-02
+
+### Added
+
+- Universal lid with the same underside groove and top stacking lip as the
+  trays, allowing it to cap a stack or sit between trays.
+- Automatic lid STL generation in the build and release bundles.
+
 ## [1.1.0] - 2026-08-31
 
 ### Changed
@@ -25,5 +33,6 @@ All notable changes to this project are documented here. Releases follow
 - Versioned release automation with a complete STL archive and SHA-256
   checksums.
 
+[1.2.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ifilot/parametric-dip-socket-tray/releases/tag/v1.0.0

@@ -15,6 +15,7 @@ and keep the sockets arranged in neat rows.
 - Central support ridges keep the socket pins above the tray floor
 - Capacity calculated automatically from the socket dimensions
 - Common interlocking interface allows every tray size to stack together
+- Universal stackable lid fits every tray size
 - 2 mm clearance above stored sockets in a stack
 - Recessed size labels with optional two-colour inlays
 - Ready-to-print STLs and small fit-test coupons
@@ -26,6 +27,8 @@ and keep the sockets arranged in neat rows.
 **[Download the complete project](https://github.com/ifilot/parametric-dip-socket-tray/archive/refs/heads/master.zip)** ·
 **[Download versioned releases](https://github.com/ifilot/parametric-dip-socket-tray/releases)** ·
 **[View automated builds](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml)**
+
+**[Download the universal lid STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip-socket-tray-lid.stl)**
 
 | Socket | Tray | Two-colour label | Fit test |
 | --- | --- | --- | --- |
@@ -100,11 +103,12 @@ the output:
 
 - `assembly` — preview the tray, contrasting label, and reference sockets
 - `tray` — printable tray with recessed lettering
+- `lid` — universal lid with a tray-compatible groove and stacking lip
 - `label` — separate label inlay for two-colour printing
 - `fit_test` — short channel for checking socket fit and pin clearance
 
-The model prints the calculated capacity and stacking pitch in OpenSCAD's
-console. Ready-to-print tray, label, and fit-test STLs are available in
+The model prints the calculated tray capacity or lid dimensions in OpenSCAD's
+console. Ready-to-print lid, tray, label, and fit-test STLs are available in
 `exports/`.
 
 ## Fit and customization
@@ -120,6 +124,7 @@ Useful parameters include:
 - `narrow_support_ridge_width` and `wide_support_ridge_width`
 - `socket_height` and `vertical_clearance`
 - `stack_fit` and `stack_groove_depth`
+- `lid_thickness`
 
 ## Printing
 
@@ -132,10 +137,10 @@ Suggested PLA settings:
 
 The printer must provide a build area of at least 160 × 160 mm.
 
-## Building all trays
+## Building all parts
 
-With OpenSCAD available on the command line, generate all 21 tray, label, and
-fit-test STLs with:
+With OpenSCAD available on the command line, generate the universal lid plus
+all 21 tray, label, and fit-test STLs with:
 
 ```sh
 bash scripts/build_all.sh
@@ -167,6 +172,14 @@ Every variant uses the same perimeter lip and underside groove:
 
 The groove locates the upper tray while perimeter ledges carry its weight, so
 the lip does not bottom out. All socket sizes can be stacked in any order.
+The universal lid uses the same groove underneath and repeats the lip on top,
+so it can cap a stack or sit between trays without breaking compatibility.
+
+Export the lid directly with:
+
+```sh
+openscad -o dip-socket-tray-lid.stl -D 'part="lid"' dip_socket_tray.scad
+```
 
 ## Two-colour labels
 

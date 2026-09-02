@@ -16,6 +16,13 @@ mkdir -p "${output_dir}"
 pins=(14 16 18 20 28 32 40)
 parts=(tray label fit_test)
 
+lid_file="${output_dir}/dip-socket-tray-lid.stl"
+echo "Building ${lid_file#"${project_root}/"}"
+openscad \
+    -o "${lid_file}" \
+    -D 'part="lid"' \
+    "${project_root}/dip_socket_tray.scad"
+
 for pin_count in "${pins[@]}"; do
     for part_name in "${parts[@]}"; do
         file_part="${part_name}"
@@ -33,4 +40,4 @@ for pin_count in "${pins[@]}"; do
     done
 done
 
-echo "Built $(( ${#pins[@]} * ${#parts[@]} )) STL files in ${output_dir}"
+echo "Built $(( ${#pins[@]} * ${#parts[@]} + 1 )) STL files in ${output_dir}"
