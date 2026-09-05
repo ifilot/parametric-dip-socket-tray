@@ -40,4 +40,18 @@ for pin_count in "${pins[@]}"; do
     done
 done
 
-echo "Built $(( ${#pins[@]} * ${#parts[@]} + 1 )) STL files in ${output_dir}"
+for part_name in "${parts[@]}"; do
+    file_part="${part_name}"
+    if [[ "${part_name}" == "fit_test" ]]; then
+        file_part="fit-test"
+    fi
+
+    output_file="${output_dir}/plcc32-socket-${file_part}.stl"
+    echo "Building ${output_file#"${project_root}/"}"
+    openscad \
+        -o "${output_file}" \
+        -D "part=\"${part_name}\"" \
+        "${project_root}/plcc32_socket_tray.scad"
+done
+
+echo "Built $(( ${#pins[@]} * ${#parts[@]} + ${#parts[@]} + 1 )) STL files in ${output_dir}"

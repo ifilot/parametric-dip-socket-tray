@@ -1,16 +1,18 @@
-# Parametric DIP socket trays
+# Parametric DIP and PLCC socket trays
 
 [![Build trays](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml/badge.svg)](https://github.com/ifilot/parametric-dip-socket-tray/actions/workflows/build-trays.yml)
 [![License: CERN-OHL-S-2.0](https://img.shields.io/badge/License-CERN--OHL--S--2.0-blue.svg)](LICENSE)
 [![Made with OpenSCAD](https://img.shields.io/badge/Made%20with-OpenSCAD-f9d72c?logo=openscad&logoColor=black)](https://openscad.org/)
 
-Stackable 160 × 160 mm storage trays for standard spring-contact DIP sockets.
-Each tray holds one socket size in continuous channels that protect the pins
-and keep the sockets arranged in neat rows.
+Stackable 160 × 160 mm storage trays for standard spring-contact DIP sockets
+and MPE M-PLCC 32 T through-hole sockets. The DIP trays use continuous
+channels; the PLCC32 tray uses individual pin-protecting positions. All trays
+share the same interlocking interface and universal lid.
 
 ## Features
 
 - Seven supported sizes: DIP-14, 16, 18, 20, 28, 32, and 40
+- Dedicated 49-position tray for rectangular MPE PLCC32 sockets
 - Automatic selection of narrow 300 mil or wide 600 mil geometry
 - Central support ridges keep the socket pins above the tray floor
 - Capacity calculated automatically from the socket dimensions
@@ -39,6 +41,7 @@ and keep the sockets arranged in neat rows.
 | DIP-28 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip28-fit-test.stl) |
 | DIP-32 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip32-fit-test.stl) |
 | DIP-40 wide | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/dip40-fit-test.stl) |
+| PLCC-32 socket | [Download STL](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/plcc32-socket-tray.stl) | [Download label](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/plcc32-socket-label.stl) | [Download test](https://raw.githubusercontent.com/ifilot/parametric-dip-socket-tray/master/exports/plcc32-socket-fit-test.stl) |
 
 ## Tray previews
 
@@ -58,11 +61,16 @@ and keep the sockets arranged in neat rows.
 | --- |
 | ![Wide DIP-40 tray](assets/dip40-tray.png) |
 
-Socket geometry shown in the previews is derived from the
+| PLCC-32 socket — 49 sockets |
+| --- |
+| ![PLCC-32 socket tray](assets/plcc32-socket-tray.png) |
+
+The DIP socket geometry shown in the previews is derived from the
 [KiCad 3D Models library](https://gitlab.com/kicad/libraries/kicad-packages3D),
 licensed under [CC BY-SA 4.0 with the KiCad Libraries Exception](https://www.kicad.org/libraries/license/).
-The sockets are shown for illustration only and are not included in the
-downloadable tray models.
+The PLCC32 preview uses a simplified procedural model based on the MPE socket
+drawing. The sockets are shown for illustration only and are not included in
+the downloadable tray models.
 
 ## Supported trays
 
@@ -75,6 +83,7 @@ downloadable tray models.
 | DIP-28 | 600 mil | 8 | 4 | 32 |
 | DIP-32 | 600 mil | 8 | 3 | 24 |
 | DIP-40 | 600 mil | 8 | 3 | 24 |
+| PLCC-32 socket | MPE series 300 | 7 | 7 | 49 |
 
 Sockets lie end-to-end in long channels. Their plastic bodies rest on a
 central ridge while both pin rows float in continuous trenches. The channel
@@ -89,6 +98,29 @@ The validated profiles use:
 | Central support ridge | 4.0 mm | 11.5 mm |
 
 Socket length is derived from the 2.54 mm pin pitch and selected pin count.
+
+The PLCC32 model is based specifically on the rectangular **M-PLCC 32 T**
+entry in the [MPE series-300 datasheet](https://cdn-reichelt.de/documents/datenblatt/C100/PLCC20_PLCC28_PLCC32_PLCC44~MPE.pdf).
+Each socket rests on a central island while all four pin rows hang freely
+above the tray floor. Shared guides keep the sockets separated and rise to
+approximately the top of each socket body.
+
+| PLCC32 socket dimension | Value |
+| --- | ---: |
+| Body size (`B`) | 18.10 × 20.64 mm |
+| Pin-row spacing (`D`) | 12.70 × 15.24 mm |
+| Outer pin span (`A`) | 7.62 × 10.16 mm |
+| Body height | 8.30 mm |
+| Pin drop | 3.70 mm |
+| Clear support footprint | 6.00 × 8.00 mm |
+| Support height above tray floor | 4.00 mm |
+| Guide height above support | 8.00 mm |
+
+Dimension `D` is the PCB hole-row spacing; it does not specify the minimum
+clear opening between the bent portions of the socket pins. The 6 × 8 mm
+support footprint is therefore based on a physical fit test, with the 8 mm
+axis following the socket's 20.64 mm direction. Its 4 mm height leaves 0.30 mm
+between the nominal 3.70 mm pin tips and the tray floor.
 
 ## Using the OpenSCAD model
 
@@ -111,11 +143,20 @@ The model prints the calculated tray capacity or lid dimensions in OpenSCAD's
 console. Ready-to-print lid, tray, label, and fit-test STLs are available in
 `exports/`.
 
+For the PLCC32 socket tray, open `plcc32_socket_tray.scad`. It provides the
+same `part` choices and uses the same stacking interface. Export it directly
+with, for example:
+
+```sh
+openscad -o plcc32-socket-tray.stl -D 'part="tray"' plcc32_socket_tray.scad
+```
+
 ## Fit and customization
 
-The supplied fit tests have been physically verified with the intended socket
-styles. For other socket brands or constructions, print a fit test before a
-complete tray.
+The DIP fit tests have been physically verified with the intended socket
+styles. The PLCC32 outer fit has also been tested, while its revised support
+island should be confirmed with another fit test before printing the complete
+tray. This is especially important for other socket brands or constructions.
 
 Useful parameters include:
 
@@ -125,6 +166,11 @@ Useful parameters include:
 - `socket_height` and `vertical_clearance`
 - `stack_fit` and `stack_groove_depth`
 - `lid_thickness`
+
+The PLCC32 model additionally exposes `socket_size`, `pin_row_spacing`,
+`pin_span`, `support_size`, `support_height`, and its independent guide
+clearances. Print the PLCC32 fit test before committing to the complete tray,
+especially when using a socket from a different manufacturer.
 
 ## Printing
 
@@ -140,7 +186,7 @@ The printer must provide a build area of at least 160 × 160 mm.
 ## Building all parts
 
 With OpenSCAD available on the command line, generate the universal lid plus
-all 21 tray, label, and fit-test STLs with:
+all 24 tray, label, and fit-test STLs with:
 
 ```sh
 bash scripts/build_all.sh
