@@ -6,6 +6,7 @@ on:
       - "VERSION"
       - "dip_socket_tray.scad"
       - "plcc32_socket_tray.scad"
+      - "plcc44_socket_tray.scad"
       - "scripts/build_all.sh"
       - ".github/workflows/build-trays.yml"
   pull_request:
@@ -13,6 +14,7 @@ on:
       - "VERSION"
       - "dip_socket_tray.scad"
       - "plcc32_socket_tray.scad"
+      - "plcc44_socket_tray.scad"
       - "scripts/build_all.sh"
       - ".github/workflows/build-trays.yml"
   workflow_dispatch:

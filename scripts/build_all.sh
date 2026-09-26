@@ -40,18 +40,36 @@ for pin_count in "${pins[@]}"; do
     done
 done
 
+for socket_pins in 32 44; do
+    for part_name in "${parts[@]}"; do
+        file_part="${part_name}"
+        if [[ "${part_name}" == "fit_test" ]]; then
+            file_part="fit-test"
+        fi
+
+        output_file="${output_dir}/plcc${socket_pins}-socket-${file_part}.stl"
+        echo "Building ${output_file#"${project_root}/"}"
+        openscad \
+            -o "${output_file}" \
+            -D "part=\"${part_name}\"" \
+            "${project_root}/plcc${socket_pins}_socket_tray.scad"
+    done
+done
+
 for part_name in "${parts[@]}"; do
     file_part="${part_name}"
     if [[ "${part_name}" == "fit_test" ]]; then
         file_part="fit-test"
     fi
 
-    output_file="${output_dir}/plcc32-socket-${file_part}.stl"
+    output_file="${output_dir}/dip28-slim-${file_part}.stl"
     echo "Building ${output_file#"${project_root}/"}"
     openscad \
         -o "${output_file}" \
+        -D 'pins=28' \
+        -D 'socket_profile="narrow"' \
         -D "part=\"${part_name}\"" \
-        "${project_root}/plcc32_socket_tray.scad"
+        "${project_root}/dip_socket_tray.scad"
 done
 
-echo "Built $(( ${#pins[@]} * ${#parts[@]} + ${#parts[@]} + 1 )) STL files in ${output_dir}"
+echo "Built $(( ${#pins[@]} * ${#parts[@]} + 3 * ${#parts[@]} + 1 )) STL files in ${output_dir}"

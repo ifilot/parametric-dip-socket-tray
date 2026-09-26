@@ -5,12 +5,14 @@
 Run with Blender 4.x, for example:
     blender --background --python scripts/render_readme.py -- \
         14 /path/to/Package_DIP.3dshapes
-    blender --background --python scripts/render_readme.py -- plcc32
+    blender --background --python scripts/render_readme.py -- dip28-slim
+    blender --background --python scripts/render_readme.py -- plcc44
 
 The socket model directory is optional. When supplied, it must contain the
 matching KiCad ``DIP-*_Socket.wrl`` model. The KiCad files are used as render
-inputs only and are not copied into this project. The PLCC32 render uses a
-dimensioned, procedural socket model based on the MPE M-PLCC 32 T drawing.
+inputs only and are not copied into this project. When no DIP model is supplied,
+a lightweight procedural reference socket is used. The PLCC renders use
+dimensioned procedural socket models based on the MPE series-300 drawing.
 """
 
 import math
@@ -136,17 +138,16 @@ def cube_object(name, size, location, mat):
     return obj
 
 
-def plcc32_socket_parts(support_z, body_mat, pin_mat):
-    """Build an M-PLCC 32 T-style socket for the PLCC tray illustration.
-
-    The rendered model intentionally shows the recognisable open socket,
-    contact rows, and THT tails without becoming a second manufacturing model.
-    Its outer body (18.10 x 20.64 x 8.30 mm) and contact pitch follow the
-    MPE drawing used by the OpenSCAD tray.
-    """
+def plcc_socket_parts(support_z, body_mat, pin_mat, pins):
+    """Build an MPE series-300 PLCC socket for the tray illustration."""
+    dimensions = {
+        32: (18.10, 20.64, 7, 9, 3.81, 5.08),
+        44: (23.18, 23.18, 11, 11, 6.35, 6.35),
+    }
+    width, length, contacts_x, contacts_y, span_x, span_y = dimensions[pins]
+    height = 8.30
     body_parts = []
     contact_parts = []
-    width, length, height = 18.10, 20.64, 8.30
     rail = 1.50
     base = 1.50
     rail_height = height - base
@@ -166,32 +167,48 @@ def plcc32_socket_parts(support_z, body_mat, pin_mat):
                                   [(width - rail) / 2, 0,
                                    support_z + base + rail_height / 2], body_mat))
 
-    # Seven contacts on each short side and nine on each long side make 32.
-    # Their shallow top bars make the socket recognisable at README scale.
-    # The contacts sit near the socket opening; placing them here also keeps
-    # their metallic tops visible above the tray's near-flush pocket walls.
+    # Shallow contact bars make the open socket recognisable at README scale.
     contact_z = support_z + height - 0.90
     for side in (-1, 1):
-        for index in range(7):
-            x = -3.81 + index * 1.27
+        for index in range(contacts_x):
+            x = -span_x + index * 1.27
             y = side * (length / 2 - rail - 0.24)
             contact_parts.append(cube_object("PLCC contact", [0.42, 0.60, 1.70],
                                              [x, y, contact_z], pin_mat))
     for side in (-1, 1):
-        for index in range(9):
+        for index in range(contacts_y):
             x = side * (width / 2 - rail - 0.24)
-            y = -5.08 + index * 1.27
+            y = -span_y + index * 1.27
             contact_parts.append(cube_object("PLCC contact", [0.60, 0.42, 1.70],
                                              [x, y, contact_z], pin_mat))
 
-    body = join_objects(body_parts, "PLCC32 socket body", body_mat)
-    contacts = join_objects(contact_parts, "PLCC32 socket contacts", pin_mat)
+    body = join_objects(body_parts, f"PLCC{pins} socket body", body_mat)
+    contacts = join_objects(contact_parts, f"PLCC{pins} socket contacts", pin_mat)
     return body, contacts
 
 
-def populate_dip_tray(parts, pins):
+def dip_socket_parts(support_z, body_mat, pin_mat, pins, wide):
+    """Build a simple filled DIP socket when a KiCad model is unavailable."""
+    width = 17.78 if wide else 10.16
+    row_spacing = 15.24 if wide else 7.62
+    length = pins / 2 * 2.54
+    height = 5.10
+    body = cube_object("DIP socket body", [width, length, height],
+                       [0, 0, support_z + height / 2], body_mat)
+    contacts = []
+    for side in (-1, 1):
+        for index in range(pins // 2):
+            contacts.append(cube_object(
+                "DIP contact", [0.48, 0.48, 3.60],
+                [side * row_spacing / 2, -length / 2 + 1.27 + index * 2.54,
+                 support_z - 1.80], pin_mat))
+    contacts = join_objects(contacts, "DIP socket contacts", pin_mat)
+    return body, contacts
+
+
+def populate_dip_tray(parts, pins, wide=None):
     """Fill every channel to the same maximum capacity as the OpenSCAD model."""
-    wide = pins >= 28
+    wide = pins >= 28 if wide is None else wide
     socket_width = 17.78 if wide else 10.16
     channel_width = socket_width + 0.60
     guide_width = 0.80
@@ -221,9 +238,9 @@ def populate_dip_tray(parts, pins):
         bpy.data.objects.remove(obj, do_unlink=True)
 
 
-def populate_plcc32_tray(parts):
-    """Fill the 7 x 7 pocket grid using the OpenSCAD placement equations."""
-    socket_size = (18.10, 20.64)
+def populate_plcc_tray(parts, pins):
+    """Fill the PLCC pocket grid using the OpenSCAD placement equations."""
+    socket_size = {32: (18.10, 20.64), 44: (23.18, 23.18)}[pins]
     side_clearance = 0.30
     guide_width = 0.80
     inner_size = (160 - 2 * 3.20, 160 - 2 * 3.20)
@@ -254,25 +271,29 @@ def point_at(obj, target):
 
 args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
 variant = args[0].lower() if args else "14"
-is_plcc32 = variant == "plcc32"
-if not is_plcc32:
-    pins = int(variant)
+is_plcc = variant in ("plcc32", "plcc44")
+is_slim28 = variant in ("dip28-slim", "28-slim")
+if is_plcc:
+    plcc_pins = int(variant[4:])
+else:
+    pins = 28 if is_slim28 else int(variant)
     if pins not in (14, 16, 18, 20, 28, 32, 40):
         raise ValueError("Unsupported pin count")
 
 root = Path(__file__).resolve().parents[1]
-if is_plcc32:
-    tray_path = root / "exports" / "plcc32-socket-tray.stl"
-    label_path = root / "exports" / "plcc32-socket-label.stl"
-    output_path = root / "assets" / "plcc32-socket-tray.png"
-    tray_name = "PLCC-32 socket tray"
-    label_name = "PLCC-32 socket label"
+if is_plcc:
+    tray_path = root / "exports" / f"plcc{plcc_pins}-socket-tray.stl"
+    label_path = root / "exports" / f"plcc{plcc_pins}-socket-label.stl"
+    output_path = root / "assets" / f"plcc{plcc_pins}-socket-tray.png"
+    tray_name = f"PLCC-{plcc_pins} socket tray"
+    label_name = f"PLCC-{plcc_pins} socket label"
 else:
-    tray_path = root / "exports" / f"dip{pins}-tray.stl"
-    label_path = root / "exports" / f"dip{pins}-label.stl"
-    output_path = root / "assets" / f"dip{pins}-tray.png"
-    tray_name = f"DIP-{pins} tray"
-    label_name = f"DIP-{pins} label"
+    file_stem = "dip28-slim" if is_slim28 else f"dip{pins}"
+    tray_path = root / "exports" / f"{file_stem}-tray.stl"
+    label_path = root / "exports" / f"{file_stem}-label.stl"
+    output_path = root / "assets" / f"{file_stem}-tray.png"
+    tray_name = f"DIP-28 slim tray" if is_slim28 else f"DIP-{pins} tray"
+    label_name = f"DIP-28 slim label" if is_slim28 else f"DIP-{pins} label"
 output_path.parent.mkdir(parents=True, exist_ok=True)
 
 socket_model_names = {
@@ -296,15 +317,21 @@ contact_mat = material("Socket contacts", (0.30, 0.32, 0.34),
 tray = import_stl(tray_path, tray_name, tray_mat)
 label = import_stl(label_path, label_name, label_mat)
 
-if is_plcc32:
-    socket_parts = plcc32_socket_parts(5.8, socket_mat, contact_mat)
-    populate_plcc32_tray(socket_parts)
+if is_plcc:
+    socket_parts = plcc_socket_parts(5.8, socket_mat, contact_mat, plcc_pins)
+    populate_plcc_tray(socket_parts, plcc_pins)
 elif len(args) > 1:
-    socket_path = Path(args[1]) / socket_model_names[pins]
+    socket_name = ("DIP-28_W7.62mm_Socket.wrl" if is_slim28
+                   else socket_model_names[pins])
+    socket_path = Path(args[1]) / socket_name
     if not socket_path.is_file():
         raise FileNotFoundError(f"KiCad socket model not found: {socket_path}")
     socket_parts = import_kicad_socket(socket_path, 5.8, socket_mat, contact_mat)
-    populate_dip_tray(socket_parts, pins)
+    populate_dip_tray(socket_parts, pins, wide=False if is_slim28 else None)
+else:
+    socket_parts = dip_socket_parts(5.8, socket_mat, contact_mat, pins,
+                                    wide=False if is_slim28 else pins >= 28)
+    populate_dip_tray(socket_parts, pins, wide=False if is_slim28 else None)
 
 bpy.ops.object.camera_add(location=(215, -230, 405))
 camera = bpy.context.object

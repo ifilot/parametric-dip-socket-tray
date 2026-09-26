@@ -13,6 +13,7 @@
 
 /* [Main] */
 pins = 14;                    // [14,16,18,20,28,32,40]
+socket_profile = "auto";      // [auto,narrow,wide]
 part = "assembly";            // [assembly,tray,lid,label,fit_test]
 show_sockets = true;          // Preview-only reference sockets
 
@@ -60,7 +61,12 @@ $fn = $preview ? 40 : 80;
 eps = 0.01;
 valid_pins = pins == 14 || pins == 16 || pins == 18 || pins == 20
           || pins == 28 || pins == 32 || pins == 40;
-is_wide_socket = pins == 28 || pins == 32 || pins == 40;
+valid_socket_profile = socket_profile == "auto"
+                    || socket_profile == "narrow"
+                    || socket_profile == "wide";
+is_wide_socket = socket_profile == "wide"
+              || (socket_profile == "auto"
+                  && (pins == 28 || pins == 32 || pins == 40));
 socket_width = is_wide_socket ? wide_socket_width : narrow_socket_width;
 pin_row_spacing = is_wide_socket ? wide_row_spacing : narrow_row_spacing;
 support_ridge_width = is_wide_socket
@@ -82,9 +88,13 @@ rows_x0 = (tray_size[0] - used_rows_width) / 2;
 used_socket_length = socket_count_per_row * socket_length
                    + (socket_count_per_row - 1) * socket_end_gap;
 sockets_y0 = (tray_size[1] - used_socket_length) / 2;
-label_text = str("DIP-", pins);
+label_text = pins == 28 && socket_profile == "narrow"
+           ? "DIP-28 slim"
+           : str("DIP-", pins);
 
 assert(valid_pins, "pins must be 14, 16, 18, 20, 28, 32, or 40");
+assert(valid_socket_profile,
+       "socket_profile must be auto, narrow, or wide");
 assert(base_thickness > stack_groove_depth,
        "The stacking groove must leave some base thickness");
 assert(lid_thickness > stack_groove_depth,
@@ -98,7 +108,7 @@ if (part == "lid") {
     echo(str("Universal lid: ", tray_size[0], " x ", tray_size[1],
              " x ", lid_thickness + stack_lip_height, " mm"));
 } else {
-    echo(str("DIP-", pins, ": ", row_count, " rows x ",
+    echo(str(label_text, ": ", row_count, " rows x ",
              socket_count_per_row, " sockets = ",
              row_count * socket_count_per_row, " sockets"));
     echo(str("Stacking pitch: ", stack_plane_z,

@@ -3,6 +3,17 @@
 All notable changes to this project are documented here. Releases follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-09-26
+
+### Added
+
+- A 36-position tray and fit-test coupon for MPE M-PLCC 44 T through-hole
+  sockets, using the common stacking interface and lid.
+- A slim 300 mil DIP-28 profile with 52 channel positions, plus printable
+  tray, label, and fit-test exports.
+- Physical fit-test verification for the slim DIP-28 and PLCC44 trays.
+- README preview renders for the slim DIP-28 and PLCC44 trays.
+
 ## [1.3.0] - 2026-09-05
 
 ### Added
@@ -46,6 +57,7 @@ All notable changes to this project are documented here. Releases follow
 - Versioned release automation with a complete STL archive and SHA-256
   checksums.
 
+[1.4.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ifilot/parametric-dip-socket-tray/compare/v1.0.0...v1.1.0
